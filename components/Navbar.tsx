@@ -137,7 +137,7 @@ export default function Navbar() {
                     <Link href="/dashboard/employer/applications" className="text-gray-700 hover:text-primary-600 transition">
                       Applicants
                     </Link>
-                    <Link href="/talent" className="text-gray-700 hover:text-primary-600 transition">
+                    <Link href="/jobseekers" className="text-gray-700 hover:text-primary-600 transition">
                       Job Seekers
                     </Link>
                     <Link href="/dashboard/employer/post-job" className="text-gray-700 hover:text-primary-600 transition">
@@ -301,7 +301,7 @@ export default function Navbar() {
                       Applicants
                     </Link>
                     <Link
-                      href="/talent"
+                      href="/jobseekers"
                       className="block px-3 py-2 text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
                       onClick={() => setIsOpen(false)}
                     >
