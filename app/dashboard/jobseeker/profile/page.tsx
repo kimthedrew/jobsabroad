@@ -34,6 +34,7 @@ export default function JobSeekerProfile() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [user, setUser] = useState<any>(null)
@@ -43,6 +44,7 @@ export default function JobSeekerProfile() {
     phone: '',
     location: '',
     bio: '',
+    profilePhoto: '',
     
     // Job Preferences
     desiredJobTitle: '',
@@ -105,6 +107,7 @@ export default function JobSeekerProfile() {
             phone: data.profile.phone || '',
             location: data.profile.location || '',
             bio: data.profile.bio || '',
+            profilePhoto: data.profile.profilePhoto || '',
             desiredJobTitle: data.profile.desiredJobTitle || '',
             desiredSalary: data.profile.desiredSalary || '',
             currency: data.profile.currency || 'USD',
@@ -125,6 +128,45 @@ export default function JobSeekerProfile() {
       console.error('Error fetching profile:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file (JPG, PNG, etc.)')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size should be less than 5MB')
+      return
+    }
+
+    setUploading(true)
+    setError('')
+
+    try {
+      // Convert image to base64
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const base64String = reader.result as string
+        setFormData({ ...formData, profilePhoto: base64String })
+        setSuccess('Photo uploaded! Remember to save your changes.')
+        setTimeout(() => setSuccess(''), 3000)
+      }
+      reader.onerror = () => {
+        setError('Failed to read the image file')
+      }
+      reader.readAsDataURL(file)
+    } catch (err: any) {
+      setError('Failed to upload image: ' + err.message)
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -156,6 +198,7 @@ export default function JobSeekerProfile() {
           phone: formData.phone,
           location: formData.location,
           bio: formData.bio,
+          profilePhoto: formData.profilePhoto,
           desiredJobTitle: formData.desiredJobTitle,
           desiredSalary: formData.desiredSalary ? parseInt(formData.desiredSalary) : undefined,
           currency: formData.currency,
@@ -350,6 +393,78 @@ export default function JobSeekerProfile() {
           {/* Personal Information */}
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Personal Information</h2>
+            
+            {/* Profile Photo */}
+            <div className="mb-6 flex items-center space-x-6">
+              <div className="flex-shrink-0">
+                {formData.profilePhoto ? (
+                  <img
+                    src={formData.profilePhoto}
+                    alt="Profile"
+                    className="w-32 h-32 rounded-full object-cover border-4 border-primary-100"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-300">
+                    <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Profile Photo
+                </label>
+                
+                {/* Upload Button */}
+                <div className="mb-3">
+                  <label className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 cursor-pointer transition">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    {uploading ? 'Uploading...' : 'Upload Photo'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="hidden"
+                    />
+                  </label>
+                  <span className="ml-3 text-sm text-gray-500">or enter URL below</span>
+                </div>
+
+                {/* URL Input */}
+                <input
+                  type="url"
+                  value={formData.profilePhoto.startsWith('data:') ? '' : formData.profilePhoto}
+                  onChange={(e) => setFormData({ ...formData, profilePhoto: e.target.value })}
+                  placeholder="https://example.com/your-photo.jpg"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  disabled={formData.profilePhoto.startsWith('data:')}
+                />
+                
+                <p className="mt-2 text-sm text-gray-500">
+                  {formData.profilePhoto.startsWith('data:') ? (
+                    <span className="text-green-600">✓ Photo uploaded successfully. Click "Save Changes" below to save.</span>
+                  ) : (
+                    'Upload a photo from your device or enter a URL (e.g., from LinkedIn). Recommended: Square image, at least 400x400px, max 5MB.'
+                  )}
+                </p>
+                
+                {/* Remove Photo Button */}
+                {formData.profilePhoto && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, profilePhoto: '' })}
+                    className="mt-2 text-sm text-red-600 hover:text-red-800 transition"
+                  >
+                    Remove Photo
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

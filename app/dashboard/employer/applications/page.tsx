@@ -252,14 +252,30 @@ export default function EmployerApplications() {
                   className="border border-gray-200 rounded-lg p-6 hover:border-primary-300 transition"
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {application.jobSeekerId.firstName} {application.jobSeekerId.lastName}
-                      </h3>
-                      <p className="text-gray-600">{application.jobId.title}</p>
-                      <p className="text-sm text-gray-500">
-                        Applied {new Date(application.createdAt).toLocaleDateString()}
-                      </p>
+                    <div className="flex items-center gap-4">
+                      {/* Profile Photo */}
+                      {application.profile?.profilePhoto ? (
+                        <img
+                          src={application.profile.profilePhoto}
+                          alt={`${application.jobSeekerId.firstName} ${application.jobSeekerId.lastName}`}
+                          className="w-16 h-16 rounded-full object-cover border-2 border-primary-100"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                          <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {application.jobSeekerId.firstName} {application.jobSeekerId.lastName}
+                        </h3>
+                        <p className="text-gray-600">{application.jobId.title}</p>
+                        <p className="text-sm text-gray-500">
+                          Applied {new Date(application.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       {getStatusIcon(application.status)}
@@ -419,6 +435,17 @@ export default function EmployerApplications() {
                   
                   {selectedApplication.profile ? (
                     <div className="space-y-4">
+                      {/* Profile Photo */}
+                      {selectedApplication.profile.profilePhoto && (
+                        <div className="flex justify-center mb-4">
+                          <img
+                            src={selectedApplication.profile.profilePhoto}
+                            alt={`${selectedApplication.jobSeekerId.firstName} ${selectedApplication.jobSeekerId.lastName}`}
+                            className="w-32 h-32 rounded-full object-cover border-4 border-primary-100"
+                          />
+                        </div>
+                      )}
+                      
                       <div>
                         <h4 className="font-medium text-gray-900 mb-2">Contact Information</h4>
                         <div className="text-sm space-y-1">

@@ -16,6 +16,7 @@ export interface IJobSeekerProfile extends Document {
   phone?: string
   location: string
   bio?: string
+  profilePhoto?: string
   desiredJobTitle?: string
   skills: string[]
   experience: {
@@ -79,6 +80,7 @@ const jobSeekerProfileSchema = new Schema<IJobSeekerProfile>({
   phone: String,
   location: { type: String, required: true },
   bio: String,
+  profilePhoto: String,
   desiredJobTitle: String,
   skills: [String],
   experience: [{

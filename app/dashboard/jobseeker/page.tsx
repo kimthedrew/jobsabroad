@@ -26,6 +26,7 @@ export default function JobSeekerDashboard() {
   const [applications, setApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
 
   useEffect(() => {
     checkAuth()
@@ -45,6 +46,7 @@ export default function JobSeekerDashboard() {
       }
       setUser(data.user)
       fetchApplications()
+      fetchProfile(data.user.id)
     } catch (error) {
       router.push('/auth/login')
     }
@@ -59,6 +61,18 @@ export default function JobSeekerDashboard() {
       console.error('Error fetching applications:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchProfile = async (userId: string) => {
+    try {
+      const response = await fetch(`/api/profile/jobseeker/${userId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setProfile(data.profile)
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error)
     }
   }
 
@@ -109,11 +123,25 @@ export default function JobSeekerDashboard() {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user?.firstName}!
-              </h1>
-              <p className="text-gray-600 mt-2">Manage your job applications and profile</p>
+            <div className="flex items-center gap-4">
+              {/* Profile Photo */}
+              {profile?.profilePhoto ? (
+                <img
+                  src={profile.profilePhoto}
+                  alt={`${user?.firstName} ${user?.lastName}`}
+                  className="w-20 h-20 rounded-full object-cover border-4 border-primary-100"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-300">
+                  <FaUser className="text-3xl text-gray-400" />
+                </div>
+              )}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Welcome back, {user?.firstName}!
+                </h1>
+                <p className="text-gray-600 mt-2">Manage your job applications and profile</p>
+              </div>
             </div>
             <button
               onClick={handleLogout}
