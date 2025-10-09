@@ -27,6 +27,7 @@ interface Application {
     phone?: string
     location: string
     bio?: string
+    profilePhoto?: string
     desiredJobTitle?: string
     skills: string[]
     experience: any[]
