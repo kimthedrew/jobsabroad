@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 import connectDB from '@/lib/mongodb'
 import { JobSeekerProfile } from '@/models/User'
 
+export const dynamic = 'force-dynamic'
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 // GET - Get job seeker profile

@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs'
 import connectDB from '@/lib/mongodb'
 import { User, JobSeekerProfile, EmployerProfile } from '@/models/User'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

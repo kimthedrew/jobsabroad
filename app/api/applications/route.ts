@@ -4,6 +4,8 @@ import connectDB from '@/lib/mongodb'
 import { Application } from '@/models/Application'
 import { Job } from '@/models/Job'
 
+export const dynamic = 'force-dynamic'
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 // GET - Get applications for current user

@@ -4,6 +4,8 @@ import connectDB from '@/lib/mongodb'
 import { Job } from '@/models/Job'
 import { EmployerProfile } from '@/models/User'
 
+export const dynamic = 'force-dynamic'
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 // GET - List all jobs with optional filters
